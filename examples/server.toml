@@ -1,0 +1,37 @@
+# Umbra server configuration.
+#
+# Deploy behind a real domain, e.g. cdn.example.com, with a publicly valid
+# certificate (Let's Encrypt etc.). Everything that isn't a valid Umbra
+# session is forwarded byte-for-byte to `fallback`, so the machine is
+# indistinguishable from a normal web server to probes and scanners.
+
+listen   = "0.0.0.0:443"
+cert     = "/etc/umbra/fullchain.pem"
+key      = "/etc/umbra/privkey.pem"
+
+# transport = "tls"    # default: Umbra terminates TLS itself (uses cert/key)
+# transport = "plain"  # run behind a real TLS terminator — nginx:
+#                      #   stream { server { listen 443 ssl;
+#                      #     ssl_certificate ...; ssl_certificate_key ...;
+#                      #     proxy_pass 127.0.0.1:8443; } }
+#                      # The public TLS fingerprint is then the terminator's
+#                      # own stack (OpenSSL/nginx) — a real server, not an
+#                      # emulation. Set listen to a loopback address and
+#                      # point the terminator's proxy_pass at it.
+#                      # Client side must set `server_plain = true`.
+
+# Plaintext HTTP origin that receives all non-Umbra traffic. Run nginx/caddy
+# serving a real site on this address — the more ordinary it looks, the
+# better the cover.
+fallback = "127.0.0.1:8080"
+
+# Per-endpoint UDP session lifetime (seconds, default 300).
+# udp_timeout_secs = 300
+
+[[users]]
+name     = "alice"
+password = "generate-one-with-umbra-genkey"
+
+[[users]]
+name     = "bob"
+password = "another-strong-passphrase"

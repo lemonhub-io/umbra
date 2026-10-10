@@ -1,0 +1,32 @@
+# Umbra client configuration.
+#
+# Exposes a mixed SOCKS5 / HTTP-CONNECT listener locally; every request is
+# tunnelled over a TLS 1.3 session to the server.
+
+listen   = "127.0.0.1:1080"
+server   = "cdn.example.com:443"
+password = "same-passphrase-as-the-server-user"
+
+# SNI / certificate name override. Defaults to the host part of `server`.
+# sni = "cdn.example.com"
+
+# Bootstrap without a CA bundle: pin the server leaf cert's SHA-256.
+# `umbra gencert` prints this value for self-signed deployments.
+# pinned_cert_sha256 = "0123abcd..."
+
+# ClientHello fingerprint.
+# fingerprint = "chrome"   # default: byte-mimicked Chrome TLS 1.3 hello
+                           # (GREASE, ALPS, ECH-grease, permuted extensions)
+# fingerprint = "rustls"   # compatibility path: generic rustls library hello
+
+# Set true when the server runs transport = "plain" behind a TLS
+# terminator (nginx stream proxy_pass etc.). The client's TLS session ends
+# at the terminator, so auth binds to a zero exporter instead of a shared
+# session exporter.
+# server_plain = true
+
+# Testing only — disables all certificate verification.
+# insecure = true
+
+# SOCKS UDP association lifetime (seconds, default 120).
+# udp_timeout_secs = 120
